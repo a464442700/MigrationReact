@@ -43,7 +43,7 @@ const AllDependency: React.FC = () => {
     };
 
     const onFill = () => {
-        formRef.current?.setFieldsValue({ note: 'Hello world!', gender: 'male' });
+    //    formRef.current?.setFieldsValue({ note: 'Hello world!', gender: 'male' });
     };
 
     return (
@@ -82,9 +82,9 @@ const AllDependency: React.FC = () => {
                 <Button htmlType="button" onClick={onReset}>
                     Reset
                 </Button>
-                <Button type="link" htmlType="button" onClick={onFill}>
-                    Fill form
-                </Button>
+                {/*<Button type="link" htmlType="button" onClick={onFill}>*/}
+                {/*    Fill form*/}
+                {/*</Button>*/}
             </Form.Item>
         </Form>
     );
