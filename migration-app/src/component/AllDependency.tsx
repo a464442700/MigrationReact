@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Button, Form, Input, Select} from 'antd';
 import type {FormInstance} from 'antd/es/form';
 import axios, {AxiosResponse, AxiosError} from 'axios';
+import NodeTable from './NodeTable';
 
 const {Option} = Select;
 
@@ -16,9 +17,28 @@ const tailLayout = {
 //测试数据
 const dataSources = [{"name": "dupdb", "value": "local"}, {"name": "xepdb1", "value": "remote"}];
 
+function uppercaseObjectValues(obj: Record<string, any>): Record<string, any> {
+    const newObj: Record<string, any> = {};
+
+    Object.keys(obj).forEach(key => {
+        const value = obj[key];
+
+        newObj[key] = typeof value === 'string' ? value.toUpperCase() : value;
+    });
+
+    return newObj;
+}
+//添加key
+function addKeyToObjects(arr:any):any{
+    return arr.map((obj:any, index:any) => ({
+        ...obj,
+        key: obj.objectID
+    }));
+}
+
 const AllDependency: React.FC = () => {
     const formRef = React.useRef<FormInstance>(null);
-
+    const [NodesData, setNodesData] = useState<any[]>([]);
     // const onGenderChange = (value: string) => {
     //     switch (value) {
     //         case 'male':
@@ -51,8 +71,10 @@ const AllDependency: React.FC = () => {
     };
     //   const axios = require('axios');
     const onFinish = (values: any) => {
-        console.log(values);
-        let data = values;
+
+        console.log('获取节点请求入参',values);
+        let data = uppercaseObjectValues(values);//value转换成大写
+
         axios({
             url: 'http://localhost:8080/getAllDependencies',
             method: 'POST',
@@ -60,15 +82,21 @@ const AllDependency: React.FC = () => {
             data: data
         })
             .then(function (response: AxiosResponse) {
-                console.log(response);
+                console.log('response',response);
+               let nodeData=addKeyToObjects(response.data);
+                setNodesData(nodeData);
+
             })
             .catch(function (error: AxiosError) {
+                setNodesData([]);
                 console.log(error);
             });
     };
 
+    // @ts-ignore
+    // @ts-ignore
     return (
-        <Form
+       <div> <Form
             {...layout}
             ref={formRef}
             name="control-ref"
@@ -89,7 +117,7 @@ const AllDependency: React.FC = () => {
             </Form.Item>
 
 
-            <Form.Item name="owner" label="对象所有者r" rules={[{required: true}]}>
+            <Form.Item name="owner" label="对象所有者" rules={[{required: true}]}>
 
                 <Input placeholder="如:SYS"/>
             </Form.Item>
@@ -108,16 +136,19 @@ const AllDependency: React.FC = () => {
 
             <Form.Item {...tailLayout}>
                 <Button type="primary" htmlType="submit">
-                    Submit
+                    搜索
                 </Button>
                 <Button htmlType="button" onClick={onReset}>
-                    Reset
+                    重置
                 </Button>
-                <Button htmlType="button" onClick={onFill}>
-                    Fill Test Data
+                <Button type="link" htmlType="button" onClick={onFill}>
+                    填充测试数据
                 </Button>
             </Form.Item>
         </Form>
+  <NodeTable NodesData={NodesData} />
+
+       </div>
     );
 };
 
