@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
+import axios, {AxiosResponse, AxiosError} from 'axios';
 
 interface DataType {
     key: React.Key;
@@ -16,10 +17,10 @@ interface DataType {
 
 
 }
+
 interface NodeTableProps {
     NodesData: DataType[];
 }
-
 
 
 const columns: ColumnsType<DataType> = [
@@ -44,6 +45,7 @@ const columns: ColumnsType<DataType> = [
     }, {
         title: '最后编译时间',
         dataIndex: 'lastDDLTime',
+        width: 300,
     }, {
         title: '数据源',
         dataIndex: 'dataSource',
@@ -75,7 +77,7 @@ const columns: ColumnsType<DataType> = [
 //const NodeTable: React.FC<NodeTableProps> = ({ NodesData }) => {
 
 const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
-    console.log('NodesData:',NodesData);
+    //  console.log('NodesData:',NodesData);
     let Data = NodesData.NodesData;
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [loading, setLoading] = useState(false);
@@ -89,12 +91,44 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
             setLoading(false);
         }, 1000);
 
-        console.log('选中selectedRowKeys:',selectedRowKeys)
+        // console.log('选中selectedRowKeys:', selectedRowKeys);
+        const requestNodes = selectedRowKeys.map((item, index) => {
+                return Data[index]
+            }
+        );
+       console.log('选中selectedRowKeys对应的数据:',requestNodes);
+        axios({
+            url: 'http://localhost:8080/downloadFileByNodes',
+            method: 'POST',
+            headers: {'Content-Type': 'application/json',
+                'Accept': 'application/octet-stream'
+            },
+            data: requestNodes,
+
+            responseType: 'blob' // 设置响应类型为arraybuffer
+        })
+            .then(function (response) {
+                const downloadLink = window.URL.createObjectURL(response.data);
+
+                // 创建a标签，设置下载链接和下载文件名
+                const a = document.createElement('a');
+                a.href = downloadLink;
+                a.download = 'test.zip';
+
+                // 触发a标签的点击事件，进行下载
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
 
     };
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-     //   console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+        //   console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
@@ -103,8 +137,8 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
         onChange: onSelectChange,
     };
     const hasSelected = selectedRowKeys.length > 0;
-    const paginationProps = {  disabled:true };//禁止分页
-    const scrollProps={y:600};//y轴滚动条
+    const paginationProps = {disabled: true};//禁止分页
+    const scrollProps = {y: 600};//y轴滚动条
     // @ts-ignore
     return (
         <div>
@@ -116,7 +150,8 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
         </span>
             </div>
-            <Table rowSelection={rowSelection} columns={columns} dataSource={Data} pagination={paginationProps}  scroll={scrollProps}/>
+            <Table rowSelection={rowSelection} columns={columns} dataSource={Data} pagination={paginationProps}
+                   scroll={scrollProps}/>
         </div>
     );
 };

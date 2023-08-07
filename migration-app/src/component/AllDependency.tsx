@@ -32,7 +32,7 @@ function uppercaseObjectValues(obj: Record<string, any>): Record<string, any> {
 function addKeyToObjects(arr:any):any{
     return arr.map((obj:any, index:any) => ({
         ...obj,
-        key: obj.objectID
+        key: index
     }));
 }
 
