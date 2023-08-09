@@ -13,7 +13,9 @@ interface DataType {
     lastDDLTime: string,
     dataSource: string,
     dependence_type: string,
-    mode: string
+    mode: string,
+    level:number
+
 
 
 }
@@ -55,6 +57,9 @@ const columns: ColumnsType<DataType> = [
     }, {
         title: '模式',
         dataIndex: 'mode',
+    },{
+        title: '层级',
+        dataIndex: 'level',
     },
 ];
 
@@ -86,39 +91,43 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
     const start = () => {
         setLoading(true);
         // ajax request after empty completing
-        setTimeout(() => {
-            setSelectedRowKeys([]);
-            setLoading(false);
-        }, 1000);
+
 
         // console.log('选中selectedRowKeys:', selectedRowKeys);
         const requestNodes = selectedRowKeys.map((item, index) => {
                 return Data[index]
             }
         );
-       console.log('选中selectedRowKeys对应的数据:',requestNodes);
+       //console.log('选中selectedRowKeys对应的数据:',requestNodes);
         axios({
             url: 'http://localhost:8080/downloadFileByNodes',
             method: 'POST',
-            headers: {'Content-Type': 'application/json',
-                'Accept': 'application/octet-stream'
-            },
             data: requestNodes,
-
-            responseType: 'blob' // 设置响应类型为arraybuffer
+            responseType: 'blob'
         })
             .then(function (response) {
+               console.log(response.headers);
+                let contentDisposition = response.headers['content-disposition'];
+
+
+                const filename: string = contentDisposition.substring(contentDisposition.indexOf("filename=") + "filename=".length);
+
+                console.log(filename);
                 const downloadLink = window.URL.createObjectURL(response.data);
 
                 // 创建a标签，设置下载链接和下载文件名
                 const a = document.createElement('a');
                 a.href = downloadLink;
-                a.download = 'test.zip';
+                a.download = filename;
 
                 // 触发a标签的点击事件，进行下载
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+
+                setLoading(false);
+
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -143,8 +152,8 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
     return (
         <div>
             <div style={{marginBottom: 16}}>
-                <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
-                    下载
+                <Button type="primary"  onClick={start} disabled={!hasSelected} loading={loading}>
+                 源码下载
                 </Button>
                 <span style={{marginLeft: 8}}>
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
