@@ -6,6 +6,7 @@ import NodeTable from './NodeTable';
 import {Switch} from 'antd';
 import G6 from '@antv/g6';
 import {Tabs} from 'antd';
+import  TreeSelectList from './TreeSelectList';
 import {AndroidOutlined, AppleOutlined} from '@ant-design/icons';
 
 const {Option} = Select;
@@ -187,7 +188,7 @@ const AllDependency: React.FC = () => {
                     type="card"
                     items={new Array(2).fill(null).map((_, i) => {
                         const id = String(i + 1);
-                        const label = id === "1" ? "节点列表" : "紧凑树";
+                        const label = id === "1" ? "节点列表" : "树查询";
                         return {
                             label: (
                                 <span> {label}
@@ -196,7 +197,7 @@ const AllDependency: React.FC = () => {
                             ),
                             key: id,
                             // children: <NodeTable NodesData={NodesData}/>
-                            children:  id==="1" ? <NodeTable NodesData={NodesData}/> :null,
+                            children:  id==="1" ? <NodeTable NodesData={NodesData}/> :<TreeSelectList/>,
                         };
                     })}
                 />

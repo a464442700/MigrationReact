@@ -4,12 +4,32 @@
 import React, { useEffect } from 'react';
 import G6 from '@antv/g6';
 
-export const Tree= () => {
+ const Tree:React.FC  = () => {
     useEffect(() => {
 
+       const  data={
+           "id": "Modeling Methods",
+           "children": [
+               {
+                   "id": "Classification",
+                   "children": [
+                       {
+                           "id": "Logistic regression"
+                       },
+                       {
+                           "id": "Linear discriminant analysis"
+                       }
 
+                   ]
+               }
+
+
+           ]
+       };
         const container = document.getElementById('container');
-        const width = container.scrollWidth;
+        // @ts-ignore
+        const width = container.scrollWidth||500;
+        // @ts-ignore
         const height = container.scrollHeight || 500;
         const graph = new G6.TreeGraph({
             container: 'container',
@@ -20,13 +40,14 @@ export const Tree= () => {
                     {
                         type: 'collapse-expand',
                         onChange: function onChange(item, collapsed) {
+                            // @ts-ignore
                             const data = item.getModel();
                             data.collapsed = collapsed;
                             return true;
                         },
                     },
-                    'drag-canvas',
-                    'zoom-canvas',
+                     'drag-canvas',
+                  'zoom-canvas',
                 ],
             },
             defaultNode: {
@@ -42,7 +63,7 @@ export const Tree= () => {
             layout: {
                 type: 'compactBox',
                 direction: 'LR',
-                getId: function getId(d) {
+                getId: function getId(d:any) {
                     return d.id;
                 },
                 getHeight: function getHeight() {
@@ -64,7 +85,7 @@ export const Tree= () => {
             return {
                 label: node.id,
                 labelCfg: {
-                    offset: 10,
+                    offset: 5,
                     position: node.children && node.children.length > 0 ? 'left' : 'right',
                 },
             };
