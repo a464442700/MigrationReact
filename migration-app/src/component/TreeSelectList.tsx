@@ -2,36 +2,10 @@ import React, { useState } from 'react';
 import { TreeSelect } from 'antd';
 
 const treeData = [
-    {
-        value: 'parent 1',
-        title: 'parent 1',
-        children: [
-            {
-                value: 'parent 1-0',
-                title: 'parent 1-0',
-                children: [
-                    {
-                        value: 'leaf1',
-                        title: 'my leaf',
-                    },
-                    {
-                        value: 'leaf2',
-                        title: 'your leaf',
-                    },
-                ],
-            },
-            {
-                value: 'parent 1-1',
-                title: 'parent 1-1',
-                children: [
-                    {
-                        value: 'sss',
-                        title: <b style={{ color: '#08c' }}>sss</b>,
-                    },
-                ],
-            },
-        ],
-    },
+    {id:1, pId:null, value:'A', title:"A"},
+    {id:2, pId:1, value:'B', title:"B"},
+    {id:3, pId:2, value:'C', title:"C"},
+    {id:4, pId:2, value:'D', title:"D"},
 ];
 const TreeSelectList: React.FC = () => {
     const [value, setValue] = useState<string>();
@@ -50,9 +24,12 @@ const TreeSelectList: React.FC = () => {
             placeholder="Please select"
             allowClear
             multiple
+            treeDataSimpleMode
             treeDefaultExpandAll
             onChange={onChange}
             treeData={treeData}
+            treeLine={true}
+            treeCheckable={false}
         />
     );
 };

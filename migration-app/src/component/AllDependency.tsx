@@ -188,7 +188,7 @@ const AllDependency: React.FC = () => {
                     type="card"
                     items={new Array(2).fill(null).map((_, i) => {
                         const id = String(i + 1);
-                        const label = id === "1" ? "节点列表" : "树查询";
+                        const label = id === "1" ? "节点列表" : "树选择";
                         return {
                             label: (
                                 <span> {label}
