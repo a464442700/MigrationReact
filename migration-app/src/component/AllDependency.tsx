@@ -48,6 +48,8 @@ const AllDependency: React.FC = () => {
         const [queryData, setQueryData] = useState<any>();
         const [messageApi, contextHolder] = message.useMessage();
         const [treeView, setTreeView] = useState(false);
+       const [treeList, setTreeList] = useState<any[]>([]);
+
        // const [currentTab, setCurrentTab] = useState("1");
         // const onGenderChange = (value: string) => {
         //     switch (value) {
@@ -82,7 +84,7 @@ const AllDependency: React.FC = () => {
         //   const axios = require('axios');
         const onFinish = (values: any) => {
             setLoading(true);
-            // console.log('获取节点请求入参',values);
+
             let data = uppercaseObjectValues(values);//value转换成大写
             setQueryData(data);
             axios({
@@ -92,10 +94,10 @@ const AllDependency: React.FC = () => {
                 data: data
             })
                 .then(function (response: AxiosResponse) {
-                    // console.log('response',response);
+
                     let nodeData = addKeyToObjects(response.data);
                     setNodesData(nodeData);
-                    setLoading(false);
+                     setLoading(false);
 
                 })
                 .catch(function (error: AxiosError) {
@@ -106,6 +108,33 @@ const AllDependency: React.FC = () => {
                     message.info("未查询到任何数据，请检查对象是否存在");
 
                 });
+
+         //树列表
+            axios({
+                url: 'http://localhost:8080/queryTreeList',
+                method: 'POST',
+                headers: {'content-type': 'application/json'},
+                data: data
+            })
+                .then(function (response: AxiosResponse) {
+
+                    setTreeList(response.data);
+
+
+                })
+                .catch(function (error: AxiosError) {
+
+
+                    setTreeList([]);
+
+                    message.info("未查询到任何数据，请检查对象是否存在");
+
+                });
+
+
+
+
+
 
             if (treeView) {
 
@@ -152,7 +181,7 @@ const AllDependency: React.FC = () => {
 
                 <Form.Item name="owner" label="对象所有者" rules={[{required: true}]}>
 
-                    <Input placeholder="如:SYS"/>
+                    <Input placeholder="如:SYS" />
                 </Form.Item>
 
                 <Form.Item name="objectType" label="对象类型" rules={[{required: true}]}>
@@ -197,7 +226,7 @@ const AllDependency: React.FC = () => {
                             ),
                             key: id,
                             // children: <NodeTable NodesData={NodesData}/>
-                            children:  id==="1" ? <NodeTable NodesData={NodesData}/> :<TreeSelectList/>,
+                            children:  id==="1" ? <NodeTable NodesData={NodesData}/> :<TreeSelectList treeData={treeList}/>,
                         };
                     })}
                 />
