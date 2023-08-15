@@ -11,6 +11,7 @@ import type {MenuProps} from 'antd';
 import {Breadcrumb, Layout, Menu, theme} from 'antd';
 
 import AllDependency from './component/AllDependency';
+import Migration from './component/Migration';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -61,7 +62,7 @@ const App: React.FC = () => {
                setRenderComponent(<AllDependency/>)
            }else if (menuItem.key==3)
             { // @ts-ignore
-                setRenderComponent(<div>3</div>)}
+                setRenderComponent(<Migration/>)}
         }
     };
 

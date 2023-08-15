@@ -98,6 +98,8 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
                 return Data[index]
             }
         );
+
+        console.log("请求报文：",requestNodes);
        //console.log('选中selectedRowKeys对应的数据:',requestNodes);
         axios({
             url: 'http://localhost:8080/downloadFileByNodes',

@@ -2,12 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, Select, message} from 'antd';
 import type {FormInstance} from 'antd/es/form';
 import axios, {AxiosResponse, AxiosError} from 'axios';
-import NodeTable from './NodeTable';
-import {Switch} from 'antd';
-import G6 from '@antv/g6';
+
 import {Tabs} from 'antd';
 import  TreeSelectList from './TreeSelectList';
-import {AndroidOutlined, AppleOutlined} from '@ant-design/icons';
+import NodeTable from "./NodeTable";
 
 const {Option} = Select;
 const layout = {
@@ -48,24 +46,9 @@ const AllDependency: React.FC = () => {
         const [queryData, setQueryData] = useState<any>();
         const [messageApi, contextHolder] = message.useMessage();
         const [treeView, setTreeView] = useState(false);
-       const [treeList, setTreeList] = useState<any[]>([]);
+        const [treeList, setTreeList] = useState<any[]>([]);
 
-       // const [currentTab, setCurrentTab] = useState("1");
-        // const onGenderChange = (value: string) => {
-        //     switch (value) {
-        //         case 'male':
-        //             formRef.current?.setFieldsValue({note: 'Hi, man!'});
-        //             break;
-        //         case 'female':
-        //             formRef.current?.setFieldsValue({note: 'Hi, lady!'});
-        //             break;
-        //         case 'other':
-        //             formRef.current?.setFieldsValue({note: 'Hi there!'});
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // };
+
 
 
         const onReset = () => {
@@ -75,9 +58,10 @@ const AllDependency: React.FC = () => {
         const onFill = () => {
             formRef.current?.setFieldsValue({
                 dataSource: 'local',
-                owner: 'SYS',
-                objectType: 'TABLE',
-                objectName: 'DUAL'
+                owner: 'APPS',
+                objectType: 'PACKAGE',
+                objectName: 'CUX_TEST_A',
+                remoteDataSource:'remote'
 
             });
         };
@@ -88,7 +72,7 @@ const AllDependency: React.FC = () => {
             let data = uppercaseObjectValues(values);//value转换成大写
             setQueryData(data);
             axios({
-                url: 'http://localhost:8080/getAllDependencies',
+                url: 'http://localhost:8080/getCompareNodes',
                 method: 'POST',
                 headers: {'content-type': 'application/json'},
                 data: data
@@ -97,7 +81,7 @@ const AllDependency: React.FC = () => {
 
                     let nodeData = addKeyToObjects(response.data);
                     setNodesData(nodeData);
-                     setLoading(false);
+                    setLoading(false);
 
                 })
                 .catch(function (error: AxiosError) {
@@ -109,27 +93,7 @@ const AllDependency: React.FC = () => {
 
                 });
 
-         //树列表
-            axios({
-                url: 'http://localhost:8080/queryTreeList',
-                method: 'POST',
-                headers: {'content-type': 'application/json'},
-                data: data
-            })
-                .then(function (response: AxiosResponse) {
 
-                    setTreeList(response.data);
-
-
-                })
-                .catch(function (error: AxiosError) {
-
-
-                    setTreeList([]);
-
-                    message.info("未查询到任何数据，请检查输入对象是否存在,或者后端服务启动");
-
-                });
 
 
 
@@ -165,10 +129,24 @@ const AllDependency: React.FC = () => {
                 {/*<Switch checkedChildren="紧凑树开启" unCheckedChildren="关闭" defaultChecked={false}*/}
                 {/*      onChange={switchOnChange}/>*/}
 
-                <Form.Item name="dataSource" label="数据源" rules={[{required: true}]}>
+                <Form.Item name="dataSource" label="本地数据源" rules={[{required: true}]}>
 
                     <Select
-                        placeholder="application.yum文件配置的数据源"
+                        placeholder="from"
+
+                        allowClear>
+                        <Option value="local">local</Option>
+                        <Option value="remote">remote</Option>
+
+                    </Select>
+
+                </Form.Item>
+
+
+                <Form.Item name="remoteDataSource" label="目标数据源" rules={[{required: true}]}>
+
+                    <Select
+                        placeholder="to"
 
                         allowClear>
                         <Option value="local">local</Option>
@@ -210,26 +188,9 @@ const AllDependency: React.FC = () => {
                 </Form.Item>
             </Form>
 
+                <NodeTable NodesData={NodesData}/>
 
 
-                <Tabs
-
-                    type="card"
-                    items={new Array(2).fill(null).map((_, i) => {
-                        const id = String(i + 1);
-                        const label = id === "1" ? "节点列表" : "树选择";
-                        return {
-                            label: (
-                                <span> {label}
-
-                                 </span>
-                            ),
-                            key: id,
-                            // children: <NodeTable NodesData={NodesData}/>
-                            children:  id==="1" ? <NodeTable NodesData={NodesData}/> :<TreeSelectList treeData={treeList}/>,
-                        };
-                    })}
-                />
 
 
             </div>
