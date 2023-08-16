@@ -14,8 +14,7 @@ interface DataType {
     dataSource: string,
     dependence_type: string,
     mode: string,
-    level:number
-
+    level: number
 
 
 }
@@ -57,7 +56,7 @@ const columns: ColumnsType<DataType> = [
     }, {
         title: '模式',
         dataIndex: 'mode',
-    },{
+    }, {
         title: '层级',
         dataIndex: 'level',
     },
@@ -86,21 +85,24 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
     let Data = NodesData.NodesData;
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [loading, setLoading] = useState(false);
-
+    const end = () => {
+        setLoading(false);
+    }
     //setData(dataTest);
     const start = () => {
         setLoading(true);
         // ajax request after empty completing
-
+        console.log(selectedRowKeys);
 
         // console.log('选中selectedRowKeys:', selectedRowKeys);
-        const requestNodes = selectedRowKeys.map((item, index) => {
-                return Data[index]
-            }
-        );
+        // const requestNodes = selectedRowKeys.filter((item, index) => {
+        //         return Data[index]
+        //     }
+        // );
 
-        console.log("请求报文：",requestNodes);
-       //console.log('选中selectedRowKeys对应的数据:',requestNodes);
+        const requestNodes=selectedRowKeys.map((item,index)=>Data[Number(item)]);
+        console.log("请求报文：", requestNodes);
+        //console.log('选中selectedRowKeys对应的数据:',requestNodes);
         axios({
             url: 'http://localhost:8080/downloadFileByNodes',
             method: 'POST',
@@ -108,7 +110,7 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
             responseType: 'blob'
         })
             .then(function (response) {
-               console.log(response.headers);
+                //console.log(response.headers);
                 let contentDisposition = response.headers['content-disposition'];
 
 
@@ -141,6 +143,7 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         //   console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
+        //    console.log(newSelectedRowKeys);
     };
 
     const rowSelection = {
@@ -154,12 +157,17 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
     return (
         <div>
             <div style={{marginBottom: 16}}>
-                <Button type="primary"  onClick={start} disabled={!hasSelected} loading={loading}>
-                 源码下载
+                <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
+                    源码下载
                 </Button>
-                <span style={{marginLeft: 8}}>
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-        </span>
+                {loading ? (
+                    <Button onClick={end}>
+                        终止
+                    </Button>
+                ) : null
+                }
+                <span style={{marginLeft: 8}}>   {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''} </span>
+
             </div>
             <Table rowSelection={rowSelection} columns={columns} dataSource={Data} pagination={paginationProps}
                    scroll={scrollProps}/>
