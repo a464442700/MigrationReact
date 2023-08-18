@@ -20,7 +20,8 @@ interface DataType {
 }
 
 interface NodeTableProps {
-    NodesData: DataType[];
+    NodesData: DataType[],
+    backupFlag:boolean;
 }
 
 
@@ -80,7 +81,7 @@ const columns: ColumnsType<DataType> = [
 // }
 //const NodeTable: React.FC<NodeTableProps> = ({ NodesData }) => {
 
-const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
+const NodeTable: React.FC<NodeTableProps> = (NodesData,backupFlag) => {
     //  console.log('NodesData:',NodesData);
     let Data = NodesData.NodesData;
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -107,7 +108,10 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData) => {
             url: 'http://localhost:8080/downloadFileByNodes',
             method: 'POST',
             data: requestNodes,
-            responseType: 'blob'
+            responseType: 'blob',
+            headers: {
+                backupFlag:backupFlag.backupFlag
+            }
         })
             .then(function (response) {
                 //console.log(response.headers);

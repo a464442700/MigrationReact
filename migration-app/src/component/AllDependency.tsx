@@ -226,7 +226,7 @@ const AllDependency: React.FC = () => {
                             ),
                             key: id,
                             // children: <NodeTable NodesData={NodesData}/>
-                            children:  id==="1" ? <NodeTable NodesData={NodesData}/> :<TreeSelectList treeData={treeList}/>,
+                            children:  id==="1" ? <NodeTable NodesData={NodesData}  backupFlag={false} /> :<TreeSelectList treeData={treeList}/>,
                         };
                     })}
                 />

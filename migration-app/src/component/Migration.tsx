@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, Select, message} from 'antd';
 import type {FormInstance} from 'antd/es/form';
 import axios, {AxiosResponse, AxiosError} from 'axios';
-
+import {Switch} from 'antd';
 import {Tabs} from 'antd';
 import  TreeSelectList from './TreeSelectList';
 import NodeTable from "./NodeTable";
@@ -45,7 +45,7 @@ const AllDependency: React.FC = () => {
         const [loading, setLoading] = useState(false);
         const [queryData, setQueryData] = useState<any>();
         const [messageApi, contextHolder] = message.useMessage();
-        const [treeView, setTreeView] = useState(false);
+        const [backupFlag, setBackupFlag] = useState(false);
         const [treeList, setTreeList] = useState<any[]>([]);
 
 
@@ -100,17 +100,14 @@ const AllDependency: React.FC = () => {
 
 
 
-            if (treeView) {
 
-
-            }
         };
         const switchOnChange = () => {
 
-            if (treeView) {
-                setTreeView(false);
+            if (backupFlag) {
+                setBackupFlag(false);
             } else {
-                setTreeView(true);
+                setBackupFlag(true);
             }
         }
 
@@ -126,8 +123,6 @@ const AllDependency: React.FC = () => {
                 onFinish={onFinish}
                 style={{maxWidth: 600}}>
 
-                {/*<Switch checkedChildren="紧凑树开启" unCheckedChildren="关闭" defaultChecked={false}*/}
-                {/*      onChange={switchOnChange}/>*/}
 
                 <Form.Item name="dataSource" label="本地数据源" rules={[{required: true}]}>
 
@@ -173,6 +168,11 @@ const AllDependency: React.FC = () => {
                     <Input placeholder="如:DUAL"/>
                 </Form.Item>
 
+                <Form.Item name="backupFlag" label="是否下载备份" rules={[{required: false}]}>
+
+                    <Switch checkedChildren="Y" unCheckedChildren="N" defaultChecked={false}
+                            onChange={switchOnChange}/>
+                </Form.Item>
 
                 <Form.Item {...tailLayout}>
                     <Button type="primary" htmlType="submit" loading={loading}>
@@ -188,7 +188,7 @@ const AllDependency: React.FC = () => {
                 </Form.Item>
             </Form>
 
-                <NodeTable NodesData={NodesData}/>
+                <NodeTable NodesData={NodesData } backupFlag={backupFlag}/>
 
 
 
