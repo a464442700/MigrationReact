@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-
+import appreciateImg from './resource/赞赏码.jpg'
 import {
     DesktopOutlined,
     FileOutlined,
@@ -7,8 +7,8 @@ import {
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import type {MenuProps} from 'antd';
-import {Breadcrumb, Layout, Menu, theme} from 'antd';
+import type {MenuProps,Button} from 'antd';
+import {Breadcrumb, Layout, Menu, theme,Modal,Image} from 'antd';
 
 import AllDependency from './component/AllDependency';
 import Migration from './component/Migration';
@@ -51,6 +51,7 @@ const App: React.FC = () => {
     const {
         token: {colorBgContainer},
     } = theme.useToken();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const selectMenu = (menuItem: MenuItem | null) => {
         if (menuItem?.key) {
@@ -65,9 +66,16 @@ const App: React.FC = () => {
                 setRenderComponent(<Migration/>)}
         }
     };
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
 
-
-
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
@@ -88,7 +96,22 @@ const App: React.FC = () => {
 
                     </div>
                 </Content>
-                <Footer style={{textAlign: 'center'}}>Ant Design ©2023 Created by liuxiaofeng </Footer>
+                <Modal  open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+                       centered={true}
+                       width={500}
+
+                >
+                    <Image
+                        width={400}
+                        height={400}
+                        src={appreciateImg}
+                    />
+                </Modal>
+
+                <Footer style={{textAlign: 'center'}}>Created by liuxiaofeng
+                    <div  >
+                    <a onClick={showModal}>想要请作者喝咖啡？</a>
+                </div></Footer>
             </Layout>
         </Layout>
     );

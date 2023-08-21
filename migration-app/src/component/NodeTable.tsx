@@ -81,9 +81,9 @@ const columns: ColumnsType<DataType> = [
 // }
 //const NodeTable: React.FC<NodeTableProps> = ({ NodesData }) => {
 
-const NodeTable: React.FC<NodeTableProps> = (NodesData,backupFlag) => {
-    //  console.log('NodesData:',NodesData);
-    let Data = NodesData.NodesData;
+const NodeTable: React.FC<NodeTableProps> = ({NodesData,backupFlag}) => {
+    console.log('backupFlag:',backupFlag,NodesData);
+    let Data = NodesData;
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [loading, setLoading] = useState(false);
     const end = () => {
@@ -102,7 +102,7 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData,backupFlag) => {
         // );
 
         const requestNodes=selectedRowKeys.map((item,index)=>Data[Number(item)]);
-        console.log("请求报文：", requestNodes);
+        console.log("请求报文：", requestNodes, backupFlag);
         //console.log('选中selectedRowKeys对应的数据:',requestNodes);
         axios({
             url: 'http://localhost:8080/downloadFileByNodes',
@@ -110,7 +110,7 @@ const NodeTable: React.FC<NodeTableProps> = (NodesData,backupFlag) => {
             data: requestNodes,
             responseType: 'blob',
             headers: {
-                backupFlag:backupFlag.backupFlag
+                backupFlag:backupFlag
             }
         })
             .then(function (response) {

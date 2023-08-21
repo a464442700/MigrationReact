@@ -45,7 +45,7 @@ const AllDependency: React.FC = () => {
         const [loading, setLoading] = useState(false);
         const [queryData, setQueryData] = useState<any>();
         const [messageApi, contextHolder] = message.useMessage();
-        const [backupFlag, setBackupFlag] = useState(false);
+        const [backupFlag, setBackupFlag] = useState(true);
         const [treeList, setTreeList] = useState<any[]>([]);
 
 
@@ -104,11 +104,8 @@ const AllDependency: React.FC = () => {
         };
         const switchOnChange = () => {
 
-            if (backupFlag) {
-                setBackupFlag(false);
-            } else {
-                setBackupFlag(true);
-            }
+            setBackupFlag(!backupFlag);
+
         }
 
 
@@ -170,7 +167,7 @@ const AllDependency: React.FC = () => {
 
                 <Form.Item name="backupFlag" label="是否下载备份" rules={[{required: false}]}>
 
-                    <Switch checkedChildren="Y" unCheckedChildren="N" defaultChecked={false}
+                    <Switch checkedChildren="Y" unCheckedChildren="N" defaultChecked={backupFlag}
                             onChange={switchOnChange}/>
                 </Form.Item>
 
