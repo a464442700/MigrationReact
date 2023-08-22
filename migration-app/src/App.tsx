@@ -7,8 +7,9 @@ import {
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import type {MenuProps,Button} from 'antd';
-import {Breadcrumb, Layout, Menu, theme,Modal,Image} from 'antd';
+import type {MenuProps} from 'antd';
+import {Breadcrumb, Layout, Menu, theme,Modal,Image,Space,Tooltip ,Button } from 'antd';
+import { CheckCircleTwoTone ,LikeOutlined} from '@ant-design/icons';
 
 import AllDependency from './component/AllDependency';
 import Migration from './component/Migration';
@@ -80,11 +81,29 @@ const App: React.FC = () => {
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 <div className="demo-logo-vertical"/>
+
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}
                       onClick={selectMenu}/>
             </Sider>
             <Layout>
+
+
+                    <Space.Compact block>
+                        <Tooltip title="redis is ok">
+                            <Button icon={<CheckCircleTwoTone  twoToneColor="#52c41a" />} />
+
+                        </Tooltip>
+                        <Tooltip title="SpringBoot is ok">
+                            <Button icon={<CheckCircleTwoTone  twoToneColor="#52c41a" />} />
+
+                        </Tooltip>
+
+                    </Space.Compact>
+
                 <Header style={{padding: 0, background: colorBgContainer}}/>
+
+
+
                 <Content style={{margin: '0 16px'}}>
                     <Breadcrumb style={{margin: '16px 0'}}>
 
