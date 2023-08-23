@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import appreciateImg from './resource/赞赏码.jpg'
 import {
     DesktopOutlined,
@@ -8,8 +8,9 @@ import {
     UserOutlined,
 } from '@ant-design/icons';
 import type {MenuProps} from 'antd';
-import {Breadcrumb, Layout, Menu, theme,Modal,Image,Space,Tooltip ,Button } from 'antd';
-import { CheckCircleTwoTone ,LikeOutlined} from '@ant-design/icons';
+import {Breadcrumb, Layout, Menu, theme, Modal, Image, Space, Tooltip, Button} from 'antd';
+import {CheckCircleTwoTone, LikeOutlined} from '@ant-design/icons';
+import axios, {AxiosResponse, AxiosError} from 'axios';
 
 import AllDependency from './component/AllDependency';
 import Migration from './component/Migration';
@@ -35,7 +36,6 @@ function getItem(
 }
 
 
-
 const items: MenuItem[] = [
 
     getItem('文件下载', 1, <FileOutlined/>, [
@@ -48,7 +48,7 @@ const items: MenuItem[] = [
 const App: React.FC = () => {
     const [collapsed, setCollapsed] = useState(false);//是否展开
     const [currentPageKey, setCurrentPageKey] = useState<number>(1);
-    const [renderComponent,setRenderComponent]=useState();
+    const [renderComponent, setRenderComponent] = useState();
     const {
         token: {colorBgContainer},
     } = theme.useToken();
@@ -58,13 +58,13 @@ const App: React.FC = () => {
         if (menuItem?.key) {
             // @ts-ignore
             setCurrentPageKey(menuItem.key)
-           // @ts-ignore
-            if (menuItem.key==2){
-               // @ts-ignore
-               setRenderComponent(<AllDependency/>)
-           }else if (menuItem.key==3)
-            { // @ts-ignore
-                setRenderComponent(<Migration/>)}
+            // @ts-ignore
+            if (menuItem.key == 2) {
+                // @ts-ignore
+                setRenderComponent(<AllDependency/>)
+            } else if (menuItem.key == 3) { // @ts-ignore
+                setRenderComponent(<Migration/>)
+            }
         }
     };
     const showModal = () => {
@@ -77,6 +77,58 @@ const App: React.FC = () => {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+
+    // const serviceStatus = [
+    //     {
+    //         title: "redis is ok",
+    //         color: "#666666",
+    //     },
+    //     {
+    //         title: "spring is ok",
+    //         color: "##990000",
+    //     },
+    //     {
+    //         title: "local dupdb is ok",
+    //         color: "#52c41a"
+    //     },
+    //     {
+    //         title: "remote XE is ok",
+    //         color: "#52c41a"
+    //     },
+    // ]
+
+
+interface ServiceStatusType {
+    title: string;
+    color: string;
+}
+    const [serviceStatus, setServiceStatus] = useState<ServiceStatusType[]>([]);//类型推断声明，不加这个<ServiceStatusType[]> 会报typescript错误
+
+    useEffect(() => {
+        const fetchData = () => {
+            axios.get("http://localhost:8080/checkServiceStatus")
+                .then(response => {
+                    setServiceStatus(response.data);
+                    //serviceStatusData(response.data);
+                })
+                .catch(error => {
+                    const errorStatusData=[ {
+                        title: "the springboot service not enbaled",
+                        color: "#990000",
+                    }];
+                    setServiceStatus(errorStatusData);
+                });
+        };
+
+        const interval = setInterval(fetchData, 10000); // 每隔10秒发送请求
+
+        // 组件卸载时清除定时器
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
@@ -88,20 +140,24 @@ const App: React.FC = () => {
             <Layout>
 
 
-                    <Space.Compact block>
-                        <Tooltip title="redis is ok">
-                            <Button icon={<CheckCircleTwoTone  twoToneColor="#52c41a" />} />
+                <Space.Compact block >
 
-                        </Tooltip>
-                        <Tooltip title="SpringBoot is ok">
-                            <Button icon={<CheckCircleTwoTone  twoToneColor="#52c41a" />} />
+                    {
+                        serviceStatus.map(({title, color}, index) => {
 
-                        </Tooltip>
+                            return (<Tooltip title={title}>
+                                <Button icon={<CheckCircleTwoTone twoToneColor={color}/>}/>
 
-                    </Space.Compact>
+                            </Tooltip>)
+                        })
+
+
+                    }
+
+
+                </Space.Compact>
 
                 <Header style={{padding: 0, background: colorBgContainer}}/>
-
 
 
                 <Content style={{margin: '0 16px'}}>
@@ -115,7 +171,7 @@ const App: React.FC = () => {
 
                     </div>
                 </Content>
-                <Modal  open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+                <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                        centered={true}
                        width={500}
 
@@ -128,9 +184,9 @@ const App: React.FC = () => {
                 </Modal>
 
                 <Footer style={{textAlign: 'center'}}>Created by liuxiaofeng
-                    <div  >
-                    <a onClick={showModal}>想要请作者喝咖啡？</a>
-                </div></Footer>
+                    <div>
+                        <a onClick={showModal}>想要请作者喝咖啡？</a>
+                    </div></Footer>
             </Layout>
         </Layout>
     );
