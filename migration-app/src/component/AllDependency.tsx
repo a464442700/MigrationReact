@@ -20,7 +20,7 @@ const tailLayout = {
 };
 //测试数据
 const dataSources = [{"name": "dupdb", "value": "local"}, {"name": "xepdb1", "value": "remote"}];
-
+const baseUrl=process.env.REACT_APP_BASE_URL;
 function uppercaseObjectValues(obj: Record<string, any>): Record<string, any> {
     const newObj: Record<string, any> = {};
 
@@ -88,7 +88,7 @@ const AllDependency: React.FC = () => {
             let data = uppercaseObjectValues(values);//value转换成大写
             setQueryData(data);
             axios({
-                url: 'http://localhost:8080/getAllDependencies',
+                url: `${baseUrl}getAllDependencies`,
                 method: 'POST',
                 headers: {'content-type': 'application/json'},
                 data: data
@@ -111,7 +111,7 @@ const AllDependency: React.FC = () => {
 
          //树列表
             axios({
-                url: 'http://localhost:8080/queryTreeList',
+                url: `${baseUrl}queryTreeList`,
                 method: 'POST',
                 headers: {'content-type': 'application/json'},
                 data: data

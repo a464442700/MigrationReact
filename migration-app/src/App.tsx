@@ -45,7 +45,9 @@ const items: MenuItem[] = [
     ]),
 
 ];
+const baseUrl=process.env.REACT_APP_BASE_URL;
 const App: React.FC = () => {
+  //  console.log(process.env.REACT_APP_BASE_URL)
     const [collapsed, setCollapsed] = useState(false);//是否展开
     const [currentPageKey, setCurrentPageKey] = useState<number>(1);
     const [renderComponent, setRenderComponent] = useState();
@@ -106,7 +108,7 @@ interface ServiceStatusType {
 
     useEffect(() => {
         const fetchData = () => {
-            axios.get("http://localhost:8080/checkServiceStatus")
+            axios.get(`${baseUrl}checkServiceStatus`)
                 .then(response => {
                     setServiceStatus(response.data);
                     //serviceStatusData(response.data);

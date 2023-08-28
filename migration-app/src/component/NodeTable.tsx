@@ -80,7 +80,7 @@ const columns: ColumnsType<DataType> = [
 //     });
 // }
 //const NodeTable: React.FC<NodeTableProps> = ({ NodesData }) => {
-
+const baseUrl=process.env.REACT_APP_BASE_URL;
 const NodeTable: React.FC<NodeTableProps> = ({NodesData,backupFlag}) => {
     console.log('backupFlag:',backupFlag,NodesData);
     let Data = NodesData;
@@ -105,7 +105,7 @@ const NodeTable: React.FC<NodeTableProps> = ({NodesData,backupFlag}) => {
         console.log("请求报文：", requestNodes, backupFlag);
         //console.log('选中selectedRowKeys对应的数据:',requestNodes);
         axios({
-            url: 'http://localhost:8080/downloadFileByNodes',
+            url: `${baseUrl}downloadFileByNodes`,
             method: 'POST',
             data: requestNodes,
             responseType: 'blob',

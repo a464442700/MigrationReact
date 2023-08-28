@@ -18,7 +18,7 @@ const tailLayout = {
 };
 //测试数据
 const dataSources = [{"name": "dupdb", "value": "local"}, {"name": "xepdb1", "value": "remote"}];
-
+const baseUrl=process.env.REACT_APP_BASE_URL;
 function uppercaseObjectValues(obj: Record<string, any>): Record<string, any> {
     const newObj: Record<string, any> = {};
 
@@ -72,7 +72,7 @@ const AllDependency: React.FC = () => {
             let data = uppercaseObjectValues(values);//value转换成大写
             setQueryData(data);
             axios({
-                url: 'http://localhost:8080/getCompareNodes',
+                url: `${baseUrl}getCompareNodes`,
                 method: 'POST',
                 headers: {'content-type': 'application/json'},
                 data: data
