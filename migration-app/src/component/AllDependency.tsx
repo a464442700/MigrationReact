@@ -104,7 +104,7 @@ const AllDependency: React.FC = () => {
                 .then(function (response: AxiosResponse) {
 
 
-                    console.log(2)
+
 
 
                     const filename: string = "objectslist.cfg";
