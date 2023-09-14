@@ -82,7 +82,7 @@ const columns: ColumnsType<DataType> = [
 //const NodeTable: React.FC<NodeTableProps> = ({ NodesData }) => {
 const baseUrl=process.env.REACT_APP_BASE_URL;
 const NodeTable: React.FC<NodeTableProps> = ({NodesData,backupFlag}) => {
-    console.log('backupFlag:',backupFlag,NodesData);
+//    console.log('backupFlag:',backupFlag,NodesData);
     let Data = NodesData;
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [loading, setLoading] = useState(false);
@@ -138,6 +138,7 @@ const NodeTable: React.FC<NodeTableProps> = ({NodesData,backupFlag}) => {
 
             })
             .catch(function (error) {
+                setLoading(false);
                 console.log(error);
             });
 
